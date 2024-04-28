@@ -1,0 +1,155 @@
+:root {
+    --brandColorL50: #f5fbf5;
+    --brandColorL40: #dff2df;
+    --brandColorL30: #bee6be;
+    --brandColorL20: #9ed99e;
+    --brandColorL10: #7ecd7e;
+    --brandColor: #5cc05c;
+    --brandColorD10: #49b849;
+    --brandColorD20: #40a540;
+    --brandColorD30: #389038;
+    --brandColorD40: #307b30;
+    --brandColorD50: #286728;
+    
+    --white: #ffffff;
+    --gray98: #f7f8fa;
+    --gray96: #f2f4f5;
+    --gray92: #e1e6eb;
+    --gray80: #c3cbd4;
+    --gray60: #818d99;
+    --gray45: #5c6773;
+    --gray30: #3c444d;
+    --gray25: #31373e;
+    --gray22: #2b3033;
+    --gray20: #171d21;
+    --black: #000000;
+    
+    --accentColorL50: #ecf8ff;
+    --accentColorL40: #bfe9ff;
+    --accentColorL30: #7ed2ff;
+    --accentColorL20: #3ebcff;
+    --accentColorL10: #00a4fd;
+    --accentColor: #007abd;
+    --accentColorD10: #006eaa;
+    --accentColorD20: #006297;
+    --accentColorD30: #005684;
+    --accentColorD40: #004a71;
+    --accentColorD50: #003d5e;
+    
+    --errorColorL50: #fcedec;
+    --errorColorL40: #f8dcd9;
+    --errorColorL30: #f1b9b3;
+    --errorColorL20: #ea958d;
+    --errorColorL10: #e37267;
+    --errorColor: #dc4e41;
+    --errorColorD10: #c84535;
+    --errorColorD20: #b23d30;
+    --errorColorD30: #9c3529;
+    --errorColorD40: #852d24;
+    --errorColorD50: #6f261d;
+    
+    --alertColorL50: #fef3ec;
+    --alertColorL40: #fde6d9;
+    --alertColorL30: #facdb3;
+    --alertColorL20: #f7b48c;
+    --alertColorL10: #f49b66;
+    --alertColor: #f1813f;
+    --alertColorD10: #da742e;
+    --alertColorD20: #c2672a;
+    --alertColorD30: #aa5a25;
+    --alertColorD40: #914d1f;
+    --alertColorD50: #79401a;
+    
+    --warningColorL50: #fff9eb;
+    --warningColorL40: #fef2d7;
+    --warningColorL30: #fde5ae;
+    --warningColorL20: #fbd886;
+    --warningColorL10: #facb5d;
+    --warningColor: #f8be34;
+    --warningColorD10: #e0ac16;
+    --warningColorD20: #c79915;
+    --warningColorD30: #ae8613;
+    --warningColorD40: #957312;
+    --warningColorD50: #7d600f;
+    
+    --successColorL50: #eef6ee;
+    --successColorL40: #ddecdd;
+    --successColorL30: #bbd9ba;
+    --successColorL20: #98c697;
+    --successColorL10: #76b374;
+    --successColor: #53a051;
+    --successColorD10: #479144;
+    --successColorD20: #40813d;
+    --successColorD30: #387135;
+    --successColorD40: #2f612e;
+    --successColorD50: #275126;
+    
+    --infoColorL50: #e5f0f5;
+    --infoColorL40: #cce2eb;
+    --infoColorL30: #99c5d7;
+    --infoColorL20: #66a7c4;
+    --infoColorL10: #338ab0;
+    --infoColor: #006d9c;
+    --infoColorD10: #00577c;
+    --infoColorD20: #004c6c;
+    --infoColorD30: #00415d;
+    --infoColorD40: #00364d;
+    --infoColorD50: #002b3e;
+    
+    --primary-1: #A87676;
+    --primary-2: #CA8787;
+    --primary-3: #E1ACAC;
+    --primary-4: #FFD0D0;
+    
+    --textColor: #3c444d;
+    --textGray: #6b7785;
+    --textDisabledColor: #c3cbd4;
+    --linkColor: #006eaa;
+    --borderRadius: 0.3rem;
+    --border: 0.1 solid #c3cbd4;
+    
+    --sansFontFamily: 'Splunk Platform Sans', 'Proxima Nova', Roboto, Droid, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --serifFontFamily: Georgia, 'Times New Roman', Times, serif;
+    --monoFontFamily: 'Splunk Platform Mono', Inconsolata, Consolas, 'Droid Sans Mono', Monaco, 'Courier New', Courier, monospace;
+    --fontFamily: 'Splunk Platform Sans', 'Proxima Nova', Roboto, Droid, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    
+    --fontWeightLight: 300;
+    --fontWeightNormal: 400;
+    --fontWeightSemiBold: 500;
+    --fontWeightBold: 700;
+    --fontWeightHeavy: 800;
+    --fontWeightExtraBold: 900;
+    
+    --zindexLayer: 1000;
+    --zindexFixedNavbar: 1030;
+    --zindexModalBackdrop: 1040;
+    --zindexModal: 1050;
+    --zindexPopover: 1060;
+    --zindexToastMessages: 2000;
+    
+    --spacingQuarter: .5rem;
+    --spacingHalf: 1.0rem;
+    --spacing: 2.0rem;
+    --fontSizeSmall: 1.2rem;
+    --fontSize: 1.4rem;
+    --fontSizeLarge: 1.6rem;
+    --fontSizeXLarge: 1.8rem;
+    --fontSizeXXLarge: 2.4rem;
+    --lineHeight: 2.0rem;
+    --inputHeight: 3.2rem;
+    --borderRadius: .3rem;
+    }
+     
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    } 
+    body {
+        overflow: hidden;
+        background-color: var(--primary-1);
+    }
+    html {
+        /* font-size: 62.5%; */
+    }
+    
