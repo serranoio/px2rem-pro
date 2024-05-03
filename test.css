@@ -8,7 +8,7 @@
 }
 
 :root {
-    font-size: 16px;
+font-size: 3.2rem;
 }
 
 ::-webkit-scrollbar {
@@ -28,7 +28,7 @@ body {
     position: relative;
 }
 .mainContent {
-    height: 616px;
+height: 123.2rem;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -37,22 +37,22 @@ body {
 
 .dragDiv {
     width: 100vw;
-    height: 18px;
+height: 3.6rem;
     position: absolute;
-    top: -8px;
-    left: -8px;
+top: -1.6rem;
+left: -1.6rem;
 }
 
 .navDiv {
-    border: 1px solid rgba(255,255,255,0.09);
+border: 0.2rem solid rgba(255, 255, 255, 0.09);
     box-sizing: border-box;
     display: flex;
     align-items: center;
     position: absolute;
-    bottom: 0px;
-    left: 0px;
+bottom: 0.0rem;
+left: 0.0rem;
     width: 100vw;
-    height: 48px;
+height: 9.6rem;
     border-top-left-radius: .75rem;
     border-top-right-radius: .75rem;
 }
@@ -64,45 +64,53 @@ body {
 
 @keyframes light {
     0% {
-        box-shadow: 0 0 4px #ff6666;
+box-shadow: 0 0 0.8rem #ff6666;
     }
 
     25% {
-        box-shadow: 0 0 16px #18a058;
+box-shadow: 0 0 3.2rem #18a058;
     }
 
     50% {
-        box-shadow: 0 0 4px #2080f0;
+box-shadow: 0 0 0.8rem #2080f0;
     }
 
     75% {
-        box-shadow: 0 0 16px #f0a020;
+box-shadow: 0 0 3.2rem #f0a020;
     }
 
     100% {
-        box-shadow: 0 0 4px #d03050;
+box-shadow: 0 0 0.8rem #d03050;
     }
 }
 
 .imgItem {
-    width: 25px;
-    height: 25px;
-    border-radius: 3px;
+width: 5.0rem;
+height: 5.0rem;
+border-radius: 0.6rem;
     display: block;
 }
 
 .runeDivDash {
-    border-radius: 8px;
-    border: 1px dashed #dfdfdf;
+border-radius: 1.6rem;
+border: 0.2rem dashed #dfdfdf;
 }
 .matchAnalysisDash {
-    margin-top: 2px;
-    padding: 4px;
-    border-radius: 99px;
-    border: 1px dashed #dfdfdf;
+margin-top: 0.4rem;
+padding: 0.8rem;
+border-radius: 19.8rem;
+border: 0.2rem dashed #dfdfdf;
 }
 
 .text-ss {
-    font-size: 13px;
-    line-height: 17px;
+font-size: 2.6rem;
+line-height: 3.4rem;
 }
+
+
+
+
+
+
+
+

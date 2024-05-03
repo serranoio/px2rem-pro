@@ -21,6 +21,8 @@ const maxWidth = 80
 // --primary-3: #E1ACAC;
 // --primary-4: #FFD0D0;
 var (
+	fileColor      = lipgloss.Color("#F7F2DB")
+	fileFill       = lipgloss.NewStyle().Background(fileColor).Foreground(lipgloss.Color("#e2e2e2"))
 	primary        = lipgloss.AdaptiveColor{Light: "#A87676", Dark: "#FFD0D0"}
 	secondary      = lipgloss.AdaptiveColor{Light: "#Ca8787", Dark: "#E1ACAC"}
 	primaryLight   = lipgloss.Color("#F7DBDB")
@@ -267,12 +269,17 @@ func (m Model) appBoundaryView(text string) string {
 }
 
 func main() {
-	_, err := tea.NewProgram(NewModel()).Run()
-	if err != nil {
-		fmt.Println("Oh no:", err)
-		os.Exit(1)
-	}
 
-	// charmInterface(config{conversionFactor: .1, doNotInclude: "padding"})
-	charmInterface(globalConfig)
+	if len(os.Args) > 1 {
+		createServer()
+	} else {
+		_, err := tea.NewProgram(NewModel()).Run()
+		if err != nil {
+			fmt.Println("Oh no:", err)
+			os.Exit(1)
+		}
+
+		// charmInterface(config{conversionFactor: .1, doNotInclude: "padding"})
+		charmInterface(globalConfig)
+	}
 }

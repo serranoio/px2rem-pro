@@ -17,7 +17,7 @@
 }
 
 body {
-  background-color: var(--gray-90l);
+    background-image: linear-gradient(to left, var(--primary-1), var(--primary-2), var(--primary-3), var(--primary-4));
 }
 
 
@@ -26,3 +26,11 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+
+
+
+
+
+
+
+

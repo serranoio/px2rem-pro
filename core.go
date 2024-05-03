@@ -81,10 +81,8 @@ func checkInclusion(config config, line string) string {
 	if strings.Contains(line, "px") && !fail {
 		newLine := convertPxToRem(config, line)
 		first := greenFill.Render(strings.TrimSpace(newLine))
-		// second := primaryFill.Render(strings.TrimSpace(line))
-
-		// fmt.Println(second + " -> " + first)
-		fmt.Println(first)
+		second := primaryFill.Render(strings.TrimSpace(line))
+		fmt.Println(second + " -> " + first)
 
 		return newLine
 	} else {
@@ -114,19 +112,20 @@ type config struct {
 }
 
 func charmInterface(config config) error {
-	fmt.Println(config.conversionFactor)
-	fmt.Println(config.doNotInclude)
-
 	root := "." // Starting directory
 	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
+		if strings.Contains(path, "node_modules") {
+			return nil
+		}
+
 		if strings.Contains(path, "css") {
 			contents, _ := os.ReadFile(path)
 
-			fmt.Println(primaryFill.Render(path + ": "))
+			fmt.Println(fileFill.Render(path + ": "))
 			newContents := parseContents(config, string(contents))
 
 			os.WriteFile(path, []byte(newContents), 0755)
