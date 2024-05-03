@@ -1,0 +1,28 @@
+:root {
+  --primary-1: #aa1328;
+  --primary-2: #9a1f49;
+  --primary-3: #8b2261;
+  --primary-4: #7d1f78;
+
+
+
+
+  --gray-70d: #33060c;
+  --gray-80d: #220408;
+  --gray-90d: #110204;
+
+  --gray-70l: #e6b8bf;
+  --gray-80l: #eed0d4;
+  --gray-90l: #f7e7ea;
+}
+
+body {
+  background-color: var(--gray-90l);
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

@@ -12,6 +12,8 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+var globalConfig config
+
 const maxWidth = 80
 
 // --primary-1: #A87676;
@@ -19,13 +21,14 @@ const maxWidth = 80
 // --primary-3: #E1ACAC;
 // --primary-4: #FFD0D0;
 var (
-	primary      = lipgloss.AdaptiveColor{Light: "#A87676", Dark: "#FFD0D0"}
-	secondary    = lipgloss.AdaptiveColor{Light: "#Ca8787", Dark: "#E1ACAC"}
-	primaryLight = lipgloss.Color("#F7DBDB")
-	primaryFill  = lipgloss.NewStyle().Background(primaryLight)
-	green        = lipgloss.Color("#5E865E")
-	lightGreen   = lipgloss.Color("#AFC6AF")
-	greenFill    = lipgloss.NewStyle().Background(lightGreen)
+	primary        = lipgloss.AdaptiveColor{Light: "#A87676", Dark: "#FFD0D0"}
+	secondary      = lipgloss.AdaptiveColor{Light: "#Ca8787", Dark: "#E1ACAC"}
+	primaryLight   = lipgloss.Color("#F7DBDB")
+	primaryFill    = lipgloss.NewStyle().Background(primaryLight).Foreground(primaryLight)
+	primaryOutline = lipgloss.NewStyle().Foreground(primary)
+	green          = lipgloss.Color("#5E865E")
+	lightGreen     = lipgloss.Color("#AFC6AF")
+	greenFill      = lipgloss.NewStyle().Background(lightGreen)
 )
 
 type Styles struct {
@@ -38,11 +41,26 @@ type Styles struct {
 	Help lipgloss.Style
 }
 
-func newTheme() huh.Theme {
+func newTheme() *huh.Theme {
 
 	theme := *huh.ThemeBase()
 
-	return theme
+	theme.Blurred = huh.FieldStyles{
+		TextInput: huh.TextInputStyles{
+			Prompt: primaryOutline,
+			Cursor: primaryOutline,
+		},
+	}
+
+	theme.Focused = huh.FieldStyles{
+		TextInput: huh.TextInputStyles{
+			Prompt: primaryOutline,
+			Cursor: primaryOutline,
+			Text:   primaryOutline,
+		},
+	}
+
+	return &theme
 }
 
 func NewStyles(lg *lipgloss.Renderer) *Styles {
@@ -51,7 +69,7 @@ func NewStyles(lg *lipgloss.Renderer) *Styles {
 		Padding(1, 4, 0, 1)
 	s.HeaderText = lg.NewStyle().
 		Background(primary).
-		Bold(true).
+		Foreground(primaryLight).
 		Padding(0, 1, 0, 2)
 
 	s.Status = lg.NewStyle().
@@ -108,13 +126,13 @@ func NewModel() Model {
 			// 	Placeholder(strings.Join(acceptedUnits, " ")).
 			// 	Suggestions(acceptedUnits),
 			huh.NewInput().
-				Title("Conversion Factor").
+				Title(primaryOutline.Render("Conversion Factor")).
 				Key("factor").
 				Prompt("? ").
 				Placeholder("number"),
 			huh.NewText().
-				Title("Do Not Include").
-				Description("Commad separated list of CSS rules to NOT include"),
+				Key("do-not-include").
+				Title(primaryOutline.Render("Do Not Include List")),
 		)).
 		WithWidth(40).
 		WithShowHelp(false).
@@ -123,16 +141,18 @@ func NewModel() Model {
 	keyMap := huh.NewDefaultKeyMap()
 
 	keyMap.Input = huh.InputKeyMap{
-		Prev: key.NewBinding(key.WithKeys("up")),
-		Next: key.NewBinding(key.WithKeys("down", "tab")),
+		Prev:   key.NewBinding(key.WithKeys("up"), key.WithHelp("↑", "up")),
+		Next:   key.NewBinding(key.WithKeys("down", "tab"), key.WithHelp("↓", "down")),
+		Submit: key.NewBinding(key.WithKeys("enter"), key.WithHelp("enter", "submit")),
 	}
 
 	keyMap.Text = huh.TextKeyMap{
-		Prev: key.NewBinding(key.WithKeys("up")),
-		Next: key.NewBinding(key.WithKeys("down", "tab")),
+		Prev:   key.NewBinding(key.WithKeys("up"), key.WithHelp("↑", "up")),
+		Next:   key.NewBinding(key.WithKeys("down", "tab"), key.WithHelp("↓", "down")),
+		Submit: key.NewBinding(key.WithKeys("enter"), key.WithHelp("enter", "submit")),
 	}
 
-	m.form.WithKeyMap(keyMap)
+	m.form.WithKeyMap(keyMap).WithTheme(newTheme())
 
 	return m
 }
@@ -200,35 +220,39 @@ func (m Model) View() string {
 	form := m.lg.NewStyle().Margin(1, 0).Render(v)
 
 	// Status (right side)
-	var status string
-	{
-		conversion := m.form.GetString("factor")
-		conversionFactor, err := strconv.ParseFloat(conversion, 64)
+	conversion := m.form.GetString("factor")
+	conversionFactor, err := strconv.ParseFloat(conversion, 64)
 
-		if err != nil {
-			conversionFactor = 1
-		}
-
-		number := 24.0
-		newNumber := conversionFactor * number
-		first := primaryFill.Render(fmt.Sprintf("padding: %fpx", number))
-		second := greenFill.Render(fmt.Sprintf("padding: %frem", newNumber))
-		content := fmt.Sprintf("%s\n\n%sx\n\n%s", first, conversion, second)
-
-		const statusWidth = 38
-		statusMarginLeft := m.width - statusWidth - lipgloss.Width(form) - s.Status.GetMarginRight()
-		status = s.Status.Copy().
-			Height(lipgloss.Height(form)).
-			Width(statusWidth).
-			MarginLeft(statusMarginLeft).
-			Render(s.StatusHeader.Render("Example\n\n") + "\n" + content)
+	if err != nil {
+		conversionFactor = 1
 	}
+
+	number := 24.0
+	newNumber := conversionFactor * number
+	first := primaryFill.Render(fmt.Sprintf("padding: %fpx", number))
+	second := greenFill.Render(fmt.Sprintf("padding: %frem", newNumber))
+	content := fmt.Sprintf("%s\n\n%sx\n\n%s", first, conversion, second)
+
+	const statusWidth = 38
+	statusMarginLeft := m.width - statusWidth - lipgloss.Width(form) - s.Status.GetMarginRight()
+	status := s.Status.Copy().
+		Height(lipgloss.Height(form)).
+		Width(statusWidth).
+		MarginLeft(statusMarginLeft).
+		Render(s.StatusHeader.Render("Example\n\n") + "\n" + content)
 
 	header := m.appBoundaryView("Pixel 2 Rem Pro")
 
 	body := lipgloss.JoinHorizontal(lipgloss.Top, form, status)
 
 	footer := m.appBoundaryView(m.form.Help().ShortHelpView(m.form.KeyBinds()))
+
+	if m.form.State == huh.StateCompleted {
+
+		globalConfig = config{conversionFactor: conversionFactor, doNotInclude: m.form.GetString("do-not-include")}
+
+		return ""
+	}
 
 	return s.Base.Render(header + "\n" + body + "\n\n" + footer)
 
@@ -243,10 +267,12 @@ func (m Model) appBoundaryView(text string) string {
 }
 
 func main() {
+	_, err := tea.NewProgram(NewModel()).Run()
+	if err != nil {
+		fmt.Println("Oh no:", err)
+		os.Exit(1)
+	}
 
-	// _, err := tea.NewProgram(NewModel()).Run()
-	// if err != nil {
-	// 	fmt.Println("Oh no:", err)
-	// 	os.Exit(1)
-	// }
+	// charmInterface(config{conversionFactor: .1, doNotInclude: "padding"})
+	charmInterface(globalConfig)
 }
