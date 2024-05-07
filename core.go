@@ -122,7 +122,7 @@ func charmInterface(config config) error {
 			return nil
 		}
 
-		if strings.Contains(path, "css") {
+		if strings.Contains(path, "css") || strings.Contains("path", ".style.ts") {
 			contents, _ := os.ReadFile(path)
 
 			fmt.Println(fileFill.Render(path + ": "))
