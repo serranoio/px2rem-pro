@@ -36,7 +36,7 @@ func convertPxToRem(config config, line string) string {
 			}
 			newNumber := roundFloat(number/config.conversionFactor, uint(config.precision))
 
-			newString := fmt.Sprintf("%.1frem", newNumber)
+			newString := fmt.Sprintf("%.*frem", config.precision, newNumber)
 
 			endString := content[i+2:]
 
