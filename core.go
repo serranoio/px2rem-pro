@@ -135,7 +135,7 @@ func charmInterface(config config) error {
 		}
 
 		for _, fileExtensionList := range strings.Split(config.fileExtension, ",") {
-			if strings.Contains(path, fileExtensionList) {
+			if strings.Contains(path, strings.TrimSpace(fileExtensionList)) {
 				contents, _ := os.ReadFile(path)
 
 				fmt.Println(fileFill.Render(path + ": "))
