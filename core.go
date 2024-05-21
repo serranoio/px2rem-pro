@@ -34,7 +34,7 @@ func convertPxToRem(config config, line string) string {
 			if err != nil {
 				continue
 			}
-			newNumber := config.conversionFactor * number
+			newNumber := roundFloat(number/config.conversionFactor, uint(config.precision))
 
 			newString := fmt.Sprintf("%.1frem", newNumber)
 
@@ -109,9 +109,21 @@ func parseContents(config config, contents string) string {
 type config struct {
 	conversionFactor float64
 	doNotInclude     string
+	fileExtension    string
+	precision        int
+}
+
+func printConfig(config config) {
+	fmt.Println(config.conversionFactor)
+	fmt.Println(config.doNotInclude)
+	fmt.Println(config.fileExtension)
+	fmt.Println(config.precision)
 }
 
 func charmInterface(config config) error {
+
+	printConfig(config)
+
 	root := "." // Starting directory
 	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -122,14 +134,17 @@ func charmInterface(config config) error {
 			return nil
 		}
 
-		if strings.Contains(path, ".style.ts") {
-			contents, _ := os.ReadFile(path)
+		for _, fileExtensionList := range strings.Split(config.fileExtension, ",") {
+			if strings.Contains(path, fileExtensionList) {
+				contents, _ := os.ReadFile(path)
 
-			fmt.Println(fileFill.Render(path + ": "))
-			newContents := parseContents(config, string(contents))
+				fmt.Println(fileFill.Render(path + ": "))
+				newContents := parseContents(config, string(contents))
 
-			os.WriteFile(path, []byte(newContents), 0755)
-			fmt.Println()
+				os.WriteFile(path, []byte(newContents), 0755)
+				fmt.Println()
+			}
+
 		}
 
 		return nil

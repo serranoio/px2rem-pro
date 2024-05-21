@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -92,10 +93,11 @@ func NewStyles(lg *lipgloss.Renderer) *Styles {
 }
 
 type state struct {
-	unit1        string
-	unit2        string
+	precision    string
+	units        string
 	doNotInclude string
 	index        int
+	init         bool
 }
 
 type Model struct {
@@ -109,7 +111,7 @@ type Model struct {
 var acceptedUnits = []string{"rem", "px", "%", "em"}
 
 func NewModel() Model {
-	m := Model{width: maxWidth}
+	m := Model{width: maxWidth, state: state{precision: "4", units: "16", init: false}}
 	m.lg = lipgloss.DefaultRenderer()
 	m.styles = NewStyles(m.lg)
 
@@ -128,13 +130,23 @@ func NewModel() Model {
 			// 	Placeholder(strings.Join(acceptedUnits, " ")).
 			// 	Suggestions(acceptedUnits),
 			huh.NewInput().
-				Title(primaryOutline.Render("Conversion Factor")).
+				Title("Units in Px").
 				Key("factor").
+				Prompt("1rem = ").
+				Placeholder("(default 16px)"),
+			huh.NewInput().
+				Title("Precision").
+				Key("precision").
 				Prompt("? ").
-				Placeholder("number"),
+				Placeholder("(default 4)"),
 			huh.NewText().
 				Key("do-not-include").
-				Title(primaryOutline.Render("Do Not Include List")),
+				Title("Do Not Include List").
+				Placeholder("List of CSS properties to not change."),
+			huh.NewText().
+				Key("file-extension").
+				Title("File Extension List").
+				Placeholder("Files containing CSS properties."),
 		)).
 		WithWidth(40).
 		WithShowHelp(false).
@@ -179,6 +191,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = min(msg.Width, maxWidth) - m.styles.Base.GetHorizontalFrameSize()
 	case tea.KeyMsg:
+		m.state.init = true
 		switch msg.String() {
 		case "esc", "ctrl+c", "q":
 			return m, tea.Quit
@@ -214,6 +227,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
+func roundFloat(val float64, precision uint) float64 {
+	ratio := math.Pow(10, float64(precision))
+	return math.Round(val*ratio) / ratio
+}
+
 func (m Model) View() string {
 	s := m.styles
 
@@ -221,19 +239,55 @@ func (m Model) View() string {
 	v := strings.TrimSuffix(m.form.View(), "\n\n")
 	form := m.lg.NewStyle().Margin(1, 0).Render(v)
 
+	showConversionError := ""
+
+	noInputConversion := false
 	// Status (right side)
 	conversion := m.form.GetString("factor")
-	conversionFactor, err := strconv.ParseFloat(conversion, 64)
-
-	if err != nil {
-		conversionFactor = 1
+	if conversion == "" {
+		noInputConversion = true
 	}
 
-	number := 24.0
-	newNumber := conversionFactor * number
-	first := primaryFill.Render(fmt.Sprintf("padding: %fpx", number))
-	second := greenFill.Render(fmt.Sprintf("padding: %frem", newNumber))
-	content := fmt.Sprintf("%s\n\n%sx\n\n%s", first, conversion, second)
+	conversionFactor, err := strconv.ParseFloat(conversion, 64)
+
+	if noInputConversion {
+		conversionFactor = 16
+	} else if err != nil {
+		showConversionError += err.Error()
+	}
+
+	precisionString := m.form.GetString("precision")
+	noInputPrecision := false
+	if precisionString == "" {
+		noInputPrecision = true
+	}
+
+	showPrecisionError := ""
+	precision, err := strconv.Atoi(precisionString)
+
+	if noInputPrecision {
+		precision = 4
+	} else if err != nil {
+		showPrecisionError += err.Error()
+	}
+
+	var content string
+	if len(showConversionError) > 0 || len(showPrecisionError) > 0 {
+
+		content += fmt.Sprintf("Error: %s", showPrecisionError)
+		content += fmt.Sprintf("Error: %s", showConversionError)
+	} else {
+		if conversionFactor == 0 {
+			conversionFactor = 1
+		}
+
+		please := "Please give comma-separated lists"
+		number := 32.000
+		newNumber := roundFloat(number/conversionFactor, uint(precision))
+		first := primaryFill.Render(fmt.Sprintf("padding: %fpx", number))
+		second := greenFill.Render(fmt.Sprintf("padding: %.*frem", precision, newNumber))
+		content = fmt.Sprintf("%s\n\n/%s\n\n%s\n\n\n\n%s", first, conversion, second, please)
+	}
 
 	const statusWidth = 38
 	statusMarginLeft := m.width - statusWidth - lipgloss.Width(form) - s.Status.GetMarginRight()
@@ -251,7 +305,11 @@ func (m Model) View() string {
 
 	if m.form.State == huh.StateCompleted {
 
-		globalConfig = config{conversionFactor: conversionFactor, doNotInclude: m.form.GetString("do-not-include")}
+		globalConfig = config{conversionFactor: conversionFactor,
+			doNotInclude:  m.form.GetString("do-not-include"),
+			fileExtension: m.form.GetString("file-extension"),
+			precision:     precision,
+		}
 
 		return ""
 	}
