@@ -32,6 +32,7 @@ func convertPxToRem(config config, line string) string {
 			number, err := strconv.ParseFloat(numberString, 64)
 
 			if err != nil {
+				newLine += content + " "
 				continue
 			}
 			newNumber := roundFloat(number/config.conversionFactor, uint(config.precision))

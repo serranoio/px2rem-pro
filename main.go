@@ -287,35 +287,36 @@ func (m Model) View() string {
 		first := primaryFill.Render(fmt.Sprintf("padding: %fpx", number))
 		second := greenFill.Render(fmt.Sprintf("padding: %.*frem", precision, newNumber))
 		content = fmt.Sprintf("%s\n\n/%s\n\n%s\n\n\n\n%s", first, conversion, second, please)
-	}
 
-	const statusWidth = 38
-	statusMarginLeft := m.width - statusWidth - lipgloss.Width(form) - s.Status.GetMarginRight()
-	status := s.Status.Copy().
-		Height(lipgloss.Height(form)).
-		Width(statusWidth).
-		MarginLeft(statusMarginLeft).
-		Render(s.StatusHeader.Render("Example\n\n") + "\n" + content)
+		const statusWidth = 38
+		statusMarginLeft := m.width - statusWidth - lipgloss.Width(form) - s.Status.GetMarginRight()
+		status := s.Status.Copy().
+			Height(lipgloss.Height(form)).
+			Width(statusWidth).
+			MarginLeft(statusMarginLeft).
+			Render(s.StatusHeader.Render("Example\n\n") + "\n" + content)
 
-	header := m.appBoundaryView("Pixel 2 Rem Pro")
+		header := m.appBoundaryView("Pixel 2 Rem Pro")
 
-	body := lipgloss.JoinHorizontal(lipgloss.Top, form, status)
+		body := lipgloss.JoinHorizontal(lipgloss.Top, form, status)
 
-	footer := m.appBoundaryView(m.form.Help().ShortHelpView(m.form.KeyBinds()))
+		footer := m.appBoundaryView(m.form.Help().ShortHelpView(m.form.KeyBinds()))
 
-	if m.form.State == huh.StateCompleted {
+		if m.form.State == huh.StateCompleted {
 
-		globalConfig = config{conversionFactor: conversionFactor,
-			doNotInclude:  m.form.GetString("do-not-include"),
-			fileExtension: m.form.GetString("file-extension"),
-			precision:     precision,
+			globalConfig = config{conversionFactor: conversionFactor,
+				doNotInclude:  m.form.GetString("do-not-include"),
+				fileExtension: m.form.GetString("file-extension"),
+				precision:     precision,
+			}
+
+			return ""
 		}
 
-		return ""
+		return s.Base.Render(header + "\n" + body + "\n\n" + footer)
 	}
 
-	return s.Base.Render(header + "\n" + body + "\n\n" + footer)
-
+	return ""
 }
 
 func (m Model) appBoundaryView(text string) string {
@@ -327,7 +328,6 @@ func (m Model) appBoundaryView(text string) string {
 }
 
 func main() {
-
 	if len(os.Args) > 1 {
 		createServer()
 	} else {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -145,4 +146,20 @@ func TestParseContents(t *testing.T) {
 	config := createConfig(.25, "")
 
 	parseContents(config, str)
+}
+
+func TestSpecialREM(t *testing.T) {
+	str := `
+		const Heading = styled.h1"
+  color: ${theme.primaryColor};
+  font-size: ${theme.fontSize.large}px;
+	color: 3px;
+  text-align: center;"
+
+	`
+	config := createConfig(.5, "")
+
+	newStr := parseContents(config, str)
+
+	fmt.Println(newStr)
 }
