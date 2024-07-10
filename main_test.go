@@ -149,17 +149,13 @@ func TestParseContents(t *testing.T) {
 }
 
 func TestSpecialREM(t *testing.T) {
-	str := `
-		const Heading = styled.h1"
-  color: ${theme.primaryColor};
-  font-size: ${theme.fontSize.large}px;
-	color: 3px;
-  text-align: center;"
-
-	`
+	str := `font-size: ${theme.fontSize.large}px;`
 	config := createConfig(.5, "")
 
 	newStr := parseContents(config, str)
+
+	// we cannot change it from px to rem, because you would have to change the number from JS
+	assert.Equal(t, str, "font-size ${theme.fontSize.large}px;\n")
 
 	fmt.Println(newStr)
 }
